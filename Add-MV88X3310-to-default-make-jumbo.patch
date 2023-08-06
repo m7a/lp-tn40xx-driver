@@ -1,0 +1,28 @@
+From 4f76f6f5f8265c6de81ead6016b1808f1867ccc7 Mon Sep 17 00:00:00 2001
+From: KallistiMan <github@elehu.com>
+Date: Thu, 2 Jul 2020 15:46:01 +0200
+Subject: [PATCH 1/2] Add MV88X3310 to default make (jumbo)
+
+Includes MV88X3310 obj and phy in JUMBO_{OBJS,PHYS} enabling dkms to build also for MV88X3310.
+---
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 9f9174c..fd52a81 100644
+--- a/Makefile
++++ b/Makefile
+@@ -17,8 +17,8 @@ RESUME_FILE   := ._RESUME_
+ MODULE_DIR    :=M=$(PWD)
+ DRV_NAME      := tn40xx
+ JUMBO_OBJS    := QT2025_phy.o QT2025_phy_Linux.o TLK10232_phy.o TLK10232_phy_Linux.o \
+-                 AQR105_phy.o AQR105_phy_Linux.o
+-JUMBO_PHYS    := -DPHY_QT2025 -DPHY_TLK10232 -DPHY_AQR105 -DPHY_MUSTANG
++                 AQR105_phy.o AQR105_phy_Linux.o MV88X3310_phy.o MV88X3310_phy_Linux.o
++JUMBO_PHYS    := -DPHY_QT2025 -DPHY_TLK10232 -DPHY_AQR105 -DPHY_MUSTANG -DPHY_MV88X3310
+ 
+ DRV_NAME      := tn40xx
+ DRV_OBJS      := tn40.o CX4.o CX4_Linux.o
+-- 
+2.39.2
+

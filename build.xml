@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="build">
+
+<!-- APPLICATION METADATA -->
+<property name="masysma.target"  value="."/>
+<property name="mdpc.name"       value="mdvl-tn40xx-driver"/>
+<property name="mdpc.section"    value="non-free/kernel"/>
+<property name="mdpc.arch"       value="amd64"/>
+<property name="mdpc.descrs"     value="tn40xx driver for 10GE ethernet cards"/>
+<property name="mdpc.bdep"       value="dh-dkms, debhelper, config-package-dev"/>
+<property name="mdpc.depends"    value="dkms, linux-headers-amd64"/>
+<property name="mdpc.recommends" value="linux-libc-dev"/>
+<property name="mdpc.descrl">
+ This installs the tn40xx Linux driver for 10Gbit NICs based on the TN4010 MAC
+ from Tehuti Networks by building a module with DKMS.
+</property>
+<property name="mdpc.copyright" value="Copyright (c) Tehuti networks (and other contributors)"/>
+<!-- as stated in tn40.c -->
+<property name="mdpc.lblock">
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+</property>
+<!-- https://vincent.bernat.ch/en/blog/2018-packaging-driver-debian-dkms -->
+<property name="mdpc.add.dh">--with=dkms</property>
+<property name="mdpc.add.rules">
+include /usr/share/dpkg/pkg-info.mk
+
+override_dh_dkms:
+	dh_dkms -V 004 -- src/dkms.conf
+</property>
+
+<property name="mdpc.file.install">
+src/*.c /usr/src/tn40xx-004
+src/*.h /usr/src/tn40xx-004
+src/Makefile /usr/src/tn40xx-004
+MV88X3310_phy.h /usr/src/tn40xx-004
+</property>
+
+<target name="download">
+	<masysma_require_artifact masysmaartifact="tn40xx-driver.git"
+		masysmaatarget="src" masysmaabranch="develop"
+		masysmaadef="https://github.com/cahz/tn40xx-driver.git"/>
+</target>
+
+<target name="build" depends="download">
+	<exec executable="git" dir="src" failonerror="true">
+		<arg value="am"/>
+		<arg value="../Add-MV88X3310-to-default-make-jumbo.patch"/>
+	</exec>
+	<exec executable="patch" dir="src" failonerror="true">
+		<arg value="-p1"/>
+		<arg value="-i../build_mv88x3310.patch"/>
+	</exec>
+</target>
+
+<!-- CI INTEGRATION -->
+<target name="package_triggered" depends="package">
+	<property name="masysma.ci.trigger" value="newver"/>
+</target>
+
+<!-- CONSTANT TPL IMPORT -->
+<property environment="env"/>
+<condition property="masysma.internal.includepath.rel" value="${env.MDVL_CI_PHOENIX_ROOT}" else=".."><isset property="env.MDVL_CI_PHOENIX_ROOT"/></condition>
+<property name="masysma.internal.includepath" location="${masysma.internal.includepath.rel}"/>
+<property name="masysma.internal.loadpath" value="${masysma.internal.includepath}/co-build/ant-build-template.xml"/>
+<condition property="masysma.internal.load" value="file://${masysma.internal.loadpath}" else="https://raw.githubusercontent.com/m7a/co-build/master/ant-build-template.xml"><resourceexists><file file="${masysma.internal.loadpath}"/></resourceexists></condition>
+<import><url url="${masysma.internal.load}"/></import>
+
+</project>
