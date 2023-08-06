@@ -47,6 +47,9 @@ MV88X3310_phy.h /usr/src/tn40xx-004
 
 <target name="build" depends="download">
 	<exec executable="git" dir="src" failonerror="true">
+		<env key="GIT_COMMITTER_NAME"  value="CI"/>
+		<env key="GIT_COMMITTER_EMAIL" value="info@masysma.net"/>
+		<env key="EMAIL"               value="info@masysma.net"/>
 		<arg value="am"/>
 		<arg value="../Add-MV88X3310-to-default-make-jumbo.patch"/>
 	</exec>
