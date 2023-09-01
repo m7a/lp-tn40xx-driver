@@ -60,9 +60,7 @@ MV88X3310_phy.h /usr/src/tn40xx-004
 </target>
 
 <!-- CI INTEGRATION -->
-<target name="package_triggered" depends="package">
-	<property name="masysma.ci.trigger" value="newver"/>
-</target>
+<target name="autoci" depends="autopackage"/>
 
 <!-- CONSTANT TPL IMPORT -->
 <property environment="env"/>
